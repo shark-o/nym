@@ -17,6 +17,7 @@ mod operations;
 mod state;
 mod utils;
 
+use crate::menu::AddDefaultSubmenus;
 use crate::operations::account::*;
 use crate::operations::admin::*;
 use crate::operations::bond::*;
@@ -25,6 +26,8 @@ use crate::operations::send::*;
 use crate::utils::*;
 
 use crate::state::State;
+
+mod menu;
 
 #[cfg(test)]
 use crate::coin::{Coin, Denom};
@@ -65,7 +68,7 @@ fn main() {
       update_state_params,
       get_reverse_mix_delegations_paged,
     ])
-    .menu(create_menu_items())
+    .menu(Menu::new().add_default_app_submenu_if_macos())
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

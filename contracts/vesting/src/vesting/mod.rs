@@ -52,11 +52,13 @@ mod tests {
         let mut deps = init_contract();
         let env = mock_env();
         let account = vesting_account_fixture(&mut deps.storage, &env);
-        let created_account = load_account(&account.address(), &deps.storage).unwrap();
-        let created_account_test =
-            load_account(&Addr::unchecked("fixture"), &deps.storage).unwrap();
+        let created_account = load_account(&account.owner_address(), &deps.storage).unwrap();
+        let created_account_test = load_account(&Addr::unchecked("owner"), &deps.storage).unwrap();
+        let created_account_test_by_staking =
+            load_account(&Addr::unchecked("staking"), &deps.storage).unwrap();
         assert_eq!(Some(&account), created_account.as_ref());
         assert_eq!(Some(&account), created_account_test.as_ref());
+        assert_eq!(created_account_test_by_staking, created_account_test);
         assert_eq!(
             account.load_balance(&deps.storage).unwrap(),
             Uint128::new(1_000_000_000_000)

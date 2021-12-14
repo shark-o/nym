@@ -38,4 +38,6 @@ pub enum ContractError {
     Underflow,
     #[error("No bond found for account {0}")]
     NoBondFound(String),
+    #[error("Action can only be executed by account owner -> {0}")]
+    NotOwner(String),
 }

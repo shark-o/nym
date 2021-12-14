@@ -6,7 +6,12 @@ use cw_storage_plus::Map;
 const ACCOUNTS: Map<Addr, Account> = Map::new("acc");
 
 pub fn save_account(account: &Account, storage: &mut dyn Storage) -> Result<(), ContractError> {
-    Ok(ACCOUNTS.save(storage, account.address(), account)?)
+    // This is a bit dirty, but its a simple way to allow for both staking account and owner to load it from storage
+    if let Some(staking_address) = account.staking_address() {
+        ACCOUNTS.save(storage, staking_address.to_owned(), account)?;
+    }
+    ACCOUNTS.save(storage, account.owner_address(), account)?;
+    Ok(())
 }
 
 pub fn load_account(

@@ -5,6 +5,11 @@ use cw_storage_plus::Map;
 
 const ACCOUNTS: Map<Addr, Account> = Map::new("acc");
 
+pub fn delete_account(address: &Addr, storage: &mut dyn Storage) -> Result<(), ContractError> {
+    ACCOUNTS.remove(storage, address.to_owned());
+    Ok(())
+}
+
 pub fn save_account(account: &Account, storage: &mut dyn Storage) -> Result<(), ContractError> {
     // This is a bit dirty, but its a simple way to allow for both staking account and owner to load it from storage
     if let Some(staking_address) = account.staking_address() {

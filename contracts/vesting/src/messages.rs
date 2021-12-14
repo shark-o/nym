@@ -48,6 +48,12 @@ pub enum ExecuteMsg {
         owner: String,
         amount: Coin,
     },
+    TransferOwnership {
+        to_address: String,
+    },
+    UpdateStakingAddress {
+        to_address: Option<String>,
+    },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]

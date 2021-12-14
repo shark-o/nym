@@ -40,4 +40,6 @@ pub enum ContractError {
     NoBondFound(String),
     #[error("Action can only be executed by account owner -> {0}")]
     NotOwner(String),
+    #[error("Invalid address: {0}")]
+    InvalidAddress(String),
 }

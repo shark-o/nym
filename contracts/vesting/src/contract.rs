@@ -80,6 +80,45 @@ pub fn execute(
         ExecuteMsg::TrackUnbondGateway { owner, amount } => {
             try_track_unbond_gateway(&owner, amount, info, deps)
         }
+        ExecuteMsg::TransferOwnership { to_address } => {
+            try_transfer_ownership(to_address, info, deps)
+        }
+        ExecuteMsg::UpdateStakingAddress { to_address } => {
+            try_update_staking_address(to_address, info, deps)
+        }
+    }
+}
+
+fn try_transfer_ownership(
+    to_address: String,
+    info: MessageInfo,
+    deps: DepsMut,
+) -> Result<Response, ContractError> {
+    let address = info.sender.clone();
+    let to_address = deps.api.addr_validate(&to_address)?;
+    let mut account = account_from_address(info.sender.as_str(), deps.storage, deps.api)?;
+    println!("{}", address);
+    if address == account.owner_address() {
+        account.transfer_ownership(&to_address, deps.storage)?;
+        Ok(Response::default())
+    } else {
+        Err(ContractError::NotOwner(account.owner_address().to_string()))
+    }
+}
+
+fn try_update_staking_address(
+    to_address: Option<String>,
+    info: MessageInfo,
+    deps: DepsMut,
+) -> Result<Response, ContractError> {
+    let address = info.sender.clone();
+    let to_address = to_address.and_then(|x| deps.api.addr_validate(&x).ok());
+    let mut account = account_from_address(info.sender.as_str(), deps.storage, deps.api)?;
+    if address == account.owner_address() {
+        account.update_staking_address(to_address, deps.storage)?;
+        Ok(Response::default())
+    } else {
+        Err(ContractError::NotOwner(account.owner_address().to_string()))
     }
 }
 
